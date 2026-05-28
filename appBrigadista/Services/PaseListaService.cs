@@ -10,16 +10,14 @@ namespace appBrigadista.Services
     {
         private const string BASE = "http://192.168.10.229:8080";
         private readonly HttpClient _http = new();
-        //descomentar en T4
-
-
+       
         public async Task<List<PaseListaEntry>> ObtenerAsync()
         {
             var req = new HttpRequestMessage(HttpMethod.Get, $"{BASE}/api/pase-lista");
             req.Headers.Add("X-Role", "BRIGADISTA");
             var res = await _http.SendAsync(req);
             var json = await res.Content.ReadAsStringAsync();
-            return JsonSerializer.Deserialize<List<PaseListaEntry>>(json)
+            return JsonSerializer.Deserialize<List<PaseListaEntry>>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true})
                    ?? new List<PaseListaEntry>();
         }
 
