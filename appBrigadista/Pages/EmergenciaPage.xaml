@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<ContentPage
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    x:Class="appBrigadista.Pages.EmergenciaPage"
+    Title="Emergencia">
+
+    <ScrollView>
+
+        <VerticalStackLayout
+            Padding="20"
+            Spacing="20">
+
+            <Border
+                BackgroundColor="Red"
+                StrokeThickness="0"
+                Padding="15">
+
+                <Label
+                    Text="⚠️ EMERGENCIA ACTIVA"
+                    FontSize="28"
+                    TextColor="White"
+                    HorizontalOptions="Center" />
+
+            </Border>
+
+            <Label
+                x:Name="TipoLabel"
+                FontSize="20" />
+
+            <Label
+                x:Name="SeveridadLabel"
+                FontSize="20" />
+
+            <Label
+                x:Name="MensajeLabel"
+                FontSize="20" />
+
+            <Label
+                Text="PASE DE LISTA"
+                FontSize="24"
+                FontAttributes="Bold" />
+
+            <CollectionView
+                x:Name="PaseListaCollection">
+
+                <CollectionView.ItemTemplate>
+
+                    <DataTemplate>
+
+                        <Border
+                            Margin="0,0,0,15"
+                            Padding="15">
+
+                            <VerticalStackLayout
+                                Spacing="10">
+
+                                <Label
+                                    Text="{Binding Nombre}"
+                                    FontSize="20"
+                                    FontAttributes="Bold" />
+
+                                <Label
+                                    Text="{Binding Matricula}" />
+
+                                <Label
+                                    Text="{Binding Estado}" />
+
+                                <HorizontalStackLayout
+                                    Spacing="10">
+
+                                    <Button
+                                        Text="Seguro"
+                                        Clicked="OnSeguroClicked"
+                                        CommandParameter="{Binding .}" />
+
+                                    <Button
+                                        Text="Ausente"
+                                        Clicked="OnAusenteClicked"
+                                        CommandParameter="{Binding .}" />   
+
+                                </HorizontalStackLayout>
+
+                            </VerticalStackLayout>
+
+                        </Border>
+
+                    </DataTemplate>
+
+                </CollectionView.ItemTemplate>
+
+            </CollectionView>
+
+        </VerticalStackLayout>
+
+    </ScrollView>
+
+</ContentPage>
