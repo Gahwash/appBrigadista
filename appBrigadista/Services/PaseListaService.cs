@@ -8,7 +8,7 @@ namespace appBrigadista.Services
 {
     public class PaseListaService
     {
-        private const string BASE = "http://192.168.10.229:8080";
+        private static readonly string BASE = ApiConfig.BaseUrl;
         private readonly HttpClient _http = new();
        
         public async Task<List<PaseListaEntry>> ObtenerAsync()

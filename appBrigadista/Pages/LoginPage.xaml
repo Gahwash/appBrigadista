@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="appBrigadista.Pages.LoginPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    Title="Iniciar sesión">
+
+    <ScrollView>
+        <VerticalStackLayout
+            Padding="30"
+            Spacing="20"
+            VerticalOptions="Center">
+
+            <Label
+                Text="Nodo FOG"
+                FontSize="32"
+                FontAttributes="Bold"
+                HorizontalOptions="Center" />
+
+            <Label
+                Text="Sistema de emergencias sísmicas"
+                FontSize="16"
+                HorizontalOptions="Center" />
+
+            <Entry
+                x:Name="MatriculaEntry"
+                Placeholder="Matrícula"
+                Text="A01234567"
+                Keyboard="Text" />
+
+            <Entry
+                x:Name="PasswordEntry"
+                Placeholder="Contraseña"
+                Text="1234"
+                IsPassword="True" />
+
+            <Button
+                x:Name="LoginButton"
+                Text="Entrar"
+                Clicked="LoginButton_Clicked" />
+
+            <ActivityIndicator
+                x:Name="LoadingIndicator"
+                IsVisible="False"
+                IsRunning="False" />
+
+            <Label
+                x:Name="ErrorLabel"
+                TextColor="Red"
+                IsVisible="False"
+                HorizontalTextAlignment="Center" />
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

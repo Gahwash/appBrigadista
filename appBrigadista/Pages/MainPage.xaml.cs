@@ -78,5 +78,10 @@ namespace appBrigadista.Pages
                 await Shell.Current.Navigation.PopToRootAsync();
             }
         }
+        private void CerrarSesion_Clicked(object sender, EventArgs e)
+        {
+            Preferences.Clear();
+            Application.Current!.Windows[0].Page = new NavigationPage(new LoginPage());
+        }
     }
 }

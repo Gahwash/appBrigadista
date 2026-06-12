@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 
+
 namespace appBrigadista
 {
     public partial class App : Application
@@ -7,11 +8,21 @@ namespace appBrigadista
         public App()
         {
             InitializeComponent();
+
         }
+
+
 
         protected override Window CreateWindow(IActivationState? activationState)
         {
-            return new Window(new AppShell());
+            bool sesionIniciada = Preferences.Get("sesion_iniciada", false);
+
+            if (sesionIniciada)
+            {
+                return new Window(new AppShell());
+            }
+
+            return new Window(new NavigationPage(new LoginPage()));
         }
     }
 }

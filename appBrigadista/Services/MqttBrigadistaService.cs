@@ -19,8 +19,8 @@ namespace appBrigadista.Services
         public event Action? Conectado;
         public event Action? Desconectado;
 
-        private const string HOST = "192.168.10.229";
-        private const int PUERTO = 1883;
+        private static readonly string HOST = ApiConfig.Host;
+        private static readonly int PORT = ApiConfig.MqttPort;
         private const string EDIFICIO = "edificioA";
         //bandera para no intentar reconectar si ya se ha conectado una vez, para evitar loops de reconexión
         private bool _conectado = false;

@@ -42,6 +42,10 @@
                 FontSize="22"
                 HorizontalOptions="Center" />
 
+            <Button
+                Text="Cerrar sesión"
+                Clicked="CerrarSesion_Clicked" />
+
         </VerticalStackLayout>
 
     </ScrollView>
