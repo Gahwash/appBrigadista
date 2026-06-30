@@ -39,7 +39,7 @@ namespace appBrigadista.Pages
         {
             base.OnAppearing();
             //ESTADO INICIAL SIEMPRE
-            EstadoMqttLabel.Text = "Esperando conexión...";
+            EstadoMqttLabel.Text = "Esperando...";
 
             try
             {

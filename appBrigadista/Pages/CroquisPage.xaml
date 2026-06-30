@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<ContentPage
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    x:Class="appBrigadista.Pages.CroquisPage"
+    BackgroundColor="Black"
+    NavigationPage.HasNavigationBar="False">
+
+    <Grid RowDefinitions="Auto,*">
+
+        <Grid
+            Grid.Row="0"
+            Padding="15"
+            ColumnDefinitions="*,Auto"
+            BackgroundColor="#111111">
+
+            <Label
+                Text="Croquis de evacuación"
+                TextColor="White"
+                FontSize="20"
+                FontAttributes="Bold"
+                VerticalOptions="Center" />
+
+            <Button
+                Grid.Column="1"
+                Text="Cerrar"
+                BackgroundColor="#D62828"
+                TextColor="White"
+                Clicked="OnCerrarClicked" />
+
+        </Grid>
+
+        <ScrollView
+            Grid.Row="1"
+            Orientation="Both">
+
+            <Image
+                Source="planoevac.png"
+                Aspect="AspectFit"
+                HorizontalOptions="Center"
+                VerticalOptions="Center" />
+
+        </ScrollView>
+
+    </Grid>
+
+</ContentPage>

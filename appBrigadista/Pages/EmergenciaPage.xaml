@@ -12,6 +12,23 @@
             Padding="20"
             Spacing="20">
 
+            <Grid
+                ColumnDefinitions="*,Auto"
+                VerticalOptions="Center">
+
+                <Label
+                    Text="Emergencia"
+                    FontSize="22"
+                    FontAttributes="Bold"
+                    VerticalOptions="Center" />
+
+                <Button
+                    Grid.Column="1"
+                    Text="Ver croquis"
+                    Clicked="OnVerCroquisClicked" />
+
+            </Grid>
+
             <Border
                 BackgroundColor="Red"
                 StrokeThickness="0"

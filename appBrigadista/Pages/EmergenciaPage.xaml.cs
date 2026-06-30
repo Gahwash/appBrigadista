@@ -76,6 +76,11 @@ namespace appBrigadista.Pages
             _victimaSeleccionada = null;
         }
 
+        private async void OnVerCroquisClicked(object sender, EventArgs e)
+        {
+            await Navigation.PushModalAsync(new CroquisPage());
+        }
+
         private async void OnSeguroClicked(
             object sender,
             EventArgs e)
@@ -153,5 +158,6 @@ namespace appBrigadista.Pages
 
             persona.ActualizarUbicacion(ubicacion);
         }
+
     }
 }

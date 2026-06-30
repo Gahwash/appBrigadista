@@ -30,7 +30,7 @@
 
                 <Label
                     x:Name="EstadoMqttLabel"
-                    Text="Esperando conexión MQTT..."
+                    Text="Esperando alertas..."
                     TextColor="Black"
                     FontSize="18"
                     HorizontalOptions="Center" />
@@ -38,7 +38,7 @@
             </Border>
 
             <Label
-                Text="Esperando alertas..."
+                Text="Esperando conexión..."
                 FontSize="22"
                 HorizontalOptions="Center" />
 
