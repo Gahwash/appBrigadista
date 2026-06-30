@@ -78,6 +78,11 @@
                                     <Button
                                         Text="Ausente"
                                         Clicked="OnAusenteClicked"
+                                        CommandParameter="{Binding .}" />
+
+                                    <Button
+                                        Text="Ver ubicación"
+                                        Clicked="OnVerUbicacionClicked"
                                         CommandParameter="{Binding .}" />   
 
                                 </HorizontalStackLayout>
@@ -91,6 +96,50 @@
                 </CollectionView.ItemTemplate>
 
             </CollectionView>
+            <Frame
+                x:Name="UbicacionFrame"
+                IsVisible="False"
+                BorderColor="#028090"
+                CornerRadius="8"
+                Padding="16"
+                Margin="0,10,0,0">
+
+                <VerticalStackLayout Spacing="8">
+
+                    <Label
+                        Text="📍 Ubicación actual"
+                        FontSize="13"
+                        TextColor="#5A7A85" />
+
+                    <Label
+                        x:Name="VictimaUbicacionLabel"
+                        FontSize="18"
+                        FontAttributes="Bold"
+                        TextColor="#0D2137" />
+
+                    <Label
+                        x:Name="ZonaNombreLabel"
+                        FontSize="18"
+                        FontAttributes="Bold"
+                        TextColor="#0D2137" />
+
+                    <Label
+                        x:Name="PisoLabel"
+                        FontSize="14"
+                        TextColor="#028090" />
+
+                    <Label
+                        x:Name="ConfianzaLabel"
+                        FontSize="12"
+                        TextColor="#5A7A85" />
+
+                    <Label
+                        x:Name="UltimaActualizacionLabel"
+                        FontSize="11"
+                        TextColor="#5A7A85" />
+
+                </VerticalStackLayout>
+            </Frame>
 
         </VerticalStackLayout>
 
