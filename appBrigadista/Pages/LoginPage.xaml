@@ -12,26 +12,26 @@
             VerticalOptions="Center">
 
             <Label
-                Text="Nodo FOG"
+                Text="SACES"
                 FontSize="32"
                 FontAttributes="Bold"
                 HorizontalOptions="Center" />
 
             <Label
-                Text="Sistema de emergencias sísmicas"
+                Text="Sistema de Administracion de Casos de Emergencias Sísmicas"
                 FontSize="16"
                 HorizontalOptions="Center" />
 
             <Entry
                 x:Name="MatriculaEntry"
                 Placeholder="Matrícula"
-                Text="A01234567"
+                Text=""
                 Keyboard="Text" />
 
             <Entry
                 x:Name="PasswordEntry"
                 Placeholder="Contraseña"
-                Text="1234"
+                Text=""
                 IsPassword="True" />
 
             <Button

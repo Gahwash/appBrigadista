@@ -56,7 +56,7 @@ namespace appBrigadista.Services
             };//fin de manejar eventos de conexión y desconexión
 
             var options = new MqttClientOptionsBuilder()
-                .WithTcpServer(HOST, PUERTO)
+                .WithTcpServer(HOST, PORT)
                 .WithClientId($"brigadista-{Guid.NewGuid()}")
                 .WithCleanSession()
                 .Build();
