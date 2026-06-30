@@ -1,9 +1,6 @@
-﻿
-//esta clase es la que se encarga de mostrar la informacion de la emergencia, y el pase de lista de las personas afectadas,
+﻿//esta clase es la que se encarga de mostrar la informacion de la emergencia, y el pase de lista de las personas afectadas,
 //ademas de permitir actualizar el estado de las personas afectadas a "EN_ZONA_SEGURA" o "AUSENTE"
-using System;
-using System.Collections.Generic;
-using System.Text;
+
 using appBrigadista.Models;
 using appBrigadista.Services;
 
@@ -13,11 +10,11 @@ namespace appBrigadista.Pages
     public partial class EmergenciaPage : ContentPage
     {
         private readonly PaseListaService _paseListaService;
-        private readonly UbicacionService _ubicacionService; //sprint 3
+        private readonly UbicacionService _ubicacionService;
 
         private AlertaMensaje _alerta;
-        private PaseListaEntry? _victimaSeleccionada;//sprint 3
-        private Button? _botonUbicacionActual;
+        private List<PaseListaEntry> _paseLista = new();
+        private PaseListaEntry? _victimaSeleccionada;
 
         public AlertaMensaje Alerta
         {
@@ -43,25 +40,25 @@ namespace appBrigadista.Pages
 
         public EmergenciaPage(
             PaseListaService paseListaService,
-            UbicacionService ubicacionService)//constructor que recibe los servicios de pase de lista y ubicacion(sp3)
+            UbicacionService ubicacionService)
         {
             InitializeComponent();
 
             _paseListaService = paseListaService;
-            _ubicacionService = ubicacionService;//sprint 3
+            _ubicacionService = ubicacionService;
         }
 
         protected override async void OnAppearing()
         {
             base.OnAppearing();
 
-            var lista = await _paseListaService.ObtenerAsync();
-            PaseListaCollection.ItemsSource = lista;
+            _paseLista = (await _paseListaService.ObtenerAsync()).ToList();
+            PaseListaCollection.ItemsSource = _paseLista;
 
             await _ubicacionService.CargarUbicacionesAsync();
 
-            _ubicacionService.UbicacionActualizada -= OnUbicacionActualizada;//sprint 3
-            _ubicacionService.UbicacionActualizada += OnUbicacionActualizada;//sprint 3
+            _ubicacionService.UbicacionActualizada -= OnUbicacionActualizada;
+            _ubicacionService.UbicacionActualizada += OnUbicacionActualizada;
 
             await _ubicacionService.IniciarMqttAsync();
         }
@@ -73,13 +70,10 @@ namespace appBrigadista.Pages
             _ubicacionService.UbicacionActualizada -= OnUbicacionActualizada;
             await _ubicacionService.DetenerAsync();
 
-            if (_botonUbicacionActual != null)
-                _botonUbicacionActual.Text = "Ver ubicación";
+            foreach (var persona in _paseLista)
+                persona.OcultarUbicacion();
 
-            _botonUbicacionActual = null;
             _victimaSeleccionada = null;
-
-            OcultarUbicacion();
         }
 
         private async void OnSeguroClicked(
@@ -88,13 +82,13 @@ namespace appBrigadista.Pages
         {
             var boton = (Button)sender;
 
-            var persona = (PaseListaEntry)boton.CommandParameter; 
+            var persona = (PaseListaEntry)boton.CommandParameter;
 
             await _paseListaService.ActualizarEstadoAsync(
                 persona.VictimaId,
                 "EN_ZONA_SEGURA");
 
-            Refrescar();
+            await Refrescar();
         }
 
         private async void OnAusenteClicked(
@@ -109,20 +103,17 @@ namespace appBrigadista.Pages
                 persona.VictimaId,
                 "AUSENTE");
 
-            Refrescar();
+            await Refrescar();
         }
 
         private async Task Refrescar()
         {
-            var lista =
-                await _paseListaService.ObtenerAsync();
+            _paseLista = (await _paseListaService.ObtenerAsync()).ToList();
 
             PaseListaCollection.ItemsSource = null;
-
-            PaseListaCollection.ItemsSource =
-                lista.ToList();
+            PaseListaCollection.ItemsSource = _paseLista;
         }
-        //metodos de ubicacion
+
         private void OnVerUbicacionClicked(object sender, EventArgs e)
         {
             if (sender is not Button boton)
@@ -131,81 +122,36 @@ namespace appBrigadista.Pages
             if (boton.CommandParameter is not PaseListaEntry persona)
                 return;
 
-            // Si ya está abierta la ubicación de esta misma víctima, cerrar
-            if (_victimaSeleccionada?.VictimaId == persona.VictimaId && UbicacionFrame.IsVisible)
+            // Si la ubicación de esta persona ya está abierta, cerrarla
+            if (persona.UbicacionVisible)
             {
-                OcultarUbicacion();
-                boton.Text = "Ver ubicación";
-                _botonUbicacionActual = null;
-                _victimaSeleccionada = null;
+                persona.OcultarUbicacion();
+
+                if (_victimaSeleccionada?.VictimaId == persona.VictimaId)
+                    _victimaSeleccionada = null;
+
                 return;
             }
 
-            // Si había otro botón abierto, regresarlo a "Ver ubicación"
-            if (_botonUbicacionActual != null)
-                _botonUbicacionActual.Text = "Ver ubicación";
+            // Cerrar cualquier otra ubicación abierta
+            foreach (var item in _paseLista)
+                item.OcultarUbicacion();
 
-            // Abrir ubicación de la nueva víctima
             _victimaSeleccionada = persona;
-            _botonUbicacionActual = boton;
-            boton.Text = "Cerrar";
 
             var ubicacion = _ubicacionService.ObtenerUbicacion(persona.VictimaId);
-            MostrarUbicacion(persona, ubicacion);
-        }
-        private void OcultarUbicacion()
-        {
-            UbicacionFrame.IsVisible = false;
-
-            VictimaUbicacionLabel.Text = "";
-            ZonaNombreLabel.Text = "";
-            PisoLabel.Text = "";
-            ConfianzaLabel.Text = "";
-            UltimaActualizacionLabel.Text = "";
+            persona.MostrarUbicacion(ubicacion);
         }
 
         private void OnUbicacionActualizada(UbicacionVictima ubicacion)
         {
-            if (_victimaSeleccionada == null)
+            var persona = _paseLista
+                .FirstOrDefault(p => p.VictimaId == ubicacion.VictimaId);
+
+            if (persona == null)
                 return;
 
-            if (ubicacion.VictimaId != _victimaSeleccionada.VictimaId)
-                return;
-
-            MostrarUbicacion(_victimaSeleccionada, ubicacion);
-        }
-
-        private void MostrarUbicacion(PaseListaEntry victima, UbicacionVictima? ubicacion)
-        {
-            UbicacionFrame.IsVisible = true;
-            VictimaUbicacionLabel.Text = victima.Nombre;
-
-            if (ubicacion == null)
-            {
-                ZonaNombreLabel.Text = "Sin datos de ubicación";
-                PisoLabel.Text = "";
-                ConfianzaLabel.Text = "";
-                UltimaActualizacionLabel.Text = "";
-                return;
-            }
-
-            ZonaNombreLabel.Text = ubicacion.ZonaNombre;
-            PisoLabel.Text = ubicacion.PisoTexto;
-            ConfianzaLabel.Text = $"Confianza: {ubicacion.ConfianzaTexto}";
-
-            if (ubicacion.Timestamp > 0)
-            {
-                var fecha = DateTimeOffset
-                    .FromUnixTimeMilliseconds(ubicacion.Timestamp)
-                    .ToLocalTime()
-                    .DateTime;
-
-                UltimaActualizacionLabel.Text = $"Última actualización: {fecha:HH:mm:ss}";
-            }
-            else
-            {
-                UltimaActualizacionLabel.Text = "";
-            }
+            persona.ActualizarUbicacion(ubicacion);
         }
     }
 }

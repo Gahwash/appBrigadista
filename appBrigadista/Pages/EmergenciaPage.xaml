@@ -81,11 +81,56 @@
                                         CommandParameter="{Binding .}" />
 
                                     <Button
-                                        Text="Ver ubicación"
+                                        Text="{Binding TextoBotonUbicacion}"
                                         Clicked="OnVerUbicacionClicked"
-                                        CommandParameter="{Binding .}" />   
+                                        CommandParameter="{Binding .}" />
 
                                 </HorizontalStackLayout>
+
+                                <Frame
+                                    IsVisible="{Binding UbicacionVisible}"
+                                    BorderColor="#028090"
+                                    CornerRadius="8"
+                                    Padding="16"
+                                    Margin="0,10,0,0">
+
+                                    <VerticalStackLayout Spacing="8">
+
+                                        <Label
+                                            Text="📍 Ubicación actual"
+                                            FontSize="13"
+                                            TextColor="#5A7A85" />
+
+                                        <Label
+                                            Text="{Binding Nombre}"
+                                            FontSize="18"
+                                            FontAttributes="Bold"
+                                            TextColor="#0D2137" />
+
+                                        <Label
+                                            Text="{Binding ZonaNombreTexto}"
+                                            FontSize="18"
+                                            FontAttributes="Bold"
+                                            TextColor="#0D2137" />
+
+                                        <Label
+                                            Text="{Binding PisoTexto}"
+                                            FontSize="14"
+                                            TextColor="#028090" />
+
+                                        <Label
+                                            Text="{Binding ConfianzaTexto}"
+                                            FontSize="12"
+                                            TextColor="#5A7A85" />
+
+                                        <Label
+                                            Text="{Binding UltimaActualizacionTexto}"
+                                            FontSize="11"
+                                            TextColor="#5A7A85" />
+
+                                    </VerticalStackLayout>
+
+                                </Frame>
 
                             </VerticalStackLayout>
 
@@ -96,50 +141,6 @@
                 </CollectionView.ItemTemplate>
 
             </CollectionView>
-            <Frame
-                x:Name="UbicacionFrame"
-                IsVisible="False"
-                BorderColor="#028090"
-                CornerRadius="8"
-                Padding="16"
-                Margin="0,10,0,0">
-
-                <VerticalStackLayout Spacing="8">
-
-                    <Label
-                        Text="📍 Ubicación actual"
-                        FontSize="13"
-                        TextColor="#5A7A85" />
-
-                    <Label
-                        x:Name="VictimaUbicacionLabel"
-                        FontSize="18"
-                        FontAttributes="Bold"
-                        TextColor="#0D2137" />
-
-                    <Label
-                        x:Name="ZonaNombreLabel"
-                        FontSize="18"
-                        FontAttributes="Bold"
-                        TextColor="#0D2137" />
-
-                    <Label
-                        x:Name="PisoLabel"
-                        FontSize="14"
-                        TextColor="#028090" />
-
-                    <Label
-                        x:Name="ConfianzaLabel"
-                        FontSize="12"
-                        TextColor="#5A7A85" />
-
-                    <Label
-                        x:Name="UltimaActualizacionLabel"
-                        FontSize="11"
-                        TextColor="#5A7A85" />
-
-                </VerticalStackLayout>
-            </Frame>
 
         </VerticalStackLayout>
 
