@@ -5,31 +5,52 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     x:Class="appBrigadista.Pages.EmergenciaPage"
     Title="Emergencia"
-    BackgroundColor="White">
+    BackgroundColor="#F5F5F5">
 
-    <Grid>
+    <Grid RowDefinitions="Auto,*">
 
-        <!-- Botón del croquis -->
-        <Button
-            Text="🗺"
-            FontSize="22"
-            WidthRequest="50"
-            HeightRequest="50"
-            CornerRadius="25"
-            BackgroundColor="#0D47A1"
-            TextColor="White"
-            HorizontalOptions="End"
-            VerticalOptions="Start"
-            Margin="15"
-            Clicked="OnVerCroquisClicked"/>
+        <!-- Barra superior -->
+        <Grid
+            Grid.Row="0"
+            Padding="16,12"
+            ColumnDefinitions="*,Auto,Auto"
+            ColumnSpacing="8"
+            BackgroundColor="White">
 
-        <ScrollView Margin="0,60,0,0">
+            <Label
+                Text="Emergencia"
+                FontSize="24"
+                FontAttributes="Bold"
+                TextColor="#212121"
+                VerticalOptions="Center" />
+
+            <Button
+                Grid.Column="1"
+                Text="Incidentes"
+                BackgroundColor="#1565C0"
+                TextColor="White"
+                CornerRadius="10"
+                Padding="12,8"
+                Clicked="OnIncidentesClicked" />
+
+            <Button
+                Grid.Column="2"
+                Text="Croquis"
+                BackgroundColor="#455A64"
+                TextColor="White"
+                CornerRadius="10"
+                Padding="12,8"
+                Clicked="OnVerCroquisClicked" />
+
+        </Grid>
+
+        <ScrollView Grid.Row="1">
 
             <VerticalStackLayout
                 Padding="20"
-                Spacing="20">
+                Spacing="18">
 
-                <!-- Emergencia -->
+                <!-- Alerta activa -->
                 <Border
                     BackgroundColor="#C62828"
                     StrokeThickness="0"
@@ -37,18 +58,20 @@
                     Padding="15">
 
                     <Label
-                        Text="⚠ EMERGENCIA ACTIVA"
-                        FontSize="28"
+                        Text="⚠ Emergencia activa"
+                        FontSize="24"
                         FontAttributes="Bold"
                         TextColor="White"
-                        HorizontalOptions="Center"/>
+                        HorizontalOptions="Center" />
 
                 </Border>
 
+                <!-- Información de emergencia -->
                 <Border
                     Stroke="#DDDDDD"
                     StrokeThickness="1"
                     StrokeShape="RoundRectangle 12"
+                    BackgroundColor="White"
                     Padding="15">
 
                     <VerticalStackLayout Spacing="8">
@@ -57,17 +80,17 @@
                             x:Name="TipoLabel"
                             FontSize="18"
                             FontAttributes="Bold"
-                            TextColor="#212121"/>
+                            TextColor="#212121" />
 
                         <Label
                             x:Name="SeveridadLabel"
                             FontSize="18"
-                            TextColor="#424242"/>
+                            TextColor="#424242" />
 
                         <Label
                             x:Name="MensajeLabel"
                             FontSize="17"
-                            TextColor="#424242"/>
+                            TextColor="#424242" />
 
                     </VerticalStackLayout>
 
@@ -77,66 +100,125 @@
                     Text="Pase de lista"
                     FontSize="24"
                     FontAttributes="Bold"
-                    TextColor="#212121"/>
+                    TextColor="#212121" />
 
                 <CollectionView
                     x:Name="PaseListaCollection">
+
+                    <CollectionView.EmptyView>
+                        <Label
+                            Text="No hay personas en el pase de lista."
+                            TextColor="#757575"
+                            HorizontalOptions="Center"
+                            Margin="0,30,0,0" />
+                    </CollectionView.EmptyView>
 
                     <CollectionView.ItemTemplate>
 
                         <DataTemplate>
 
                             <Border
-                                Margin="0,0,0,15"
+                                Margin="0,0,0,14"
                                 Stroke="#DDDDDD"
                                 StrokeThickness="1"
-                                StrokeShape="RoundRectangle 12"
+                                StrokeShape="RoundRectangle 14"
                                 BackgroundColor="White"
                                 Padding="15">
 
-                                <VerticalStackLayout
-                                    Spacing="10">
+                                <VerticalStackLayout Spacing="10">
 
                                     <Label
                                         Text="{Binding Nombre}"
                                         FontSize="20"
                                         FontAttributes="Bold"
-                                        TextColor="#212121"/>
+                                        TextColor="#212121" />
 
                                     <Label
                                         Text="{Binding Matricula}"
-                                        TextColor="#616161"/>
+                                        FontSize="14"
+                                        TextColor="#616161" />
 
                                     <Label
                                         Text="{Binding Estado}"
+                                        FontSize="15"
                                         FontAttributes="Bold"
-                                        TextColor="#1565C0"/>
+                                        TextColor="#1565C0" />
 
-                                    <HorizontalStackLayout
-                                        Spacing="8">
+                                    <Grid
+                                        ColumnDefinitions="*,*,*"
+                                        ColumnSpacing="8">
 
                                         <Button
+                                            Grid.Column="0"
                                             Text="Seguro"
                                             BackgroundColor="#2E7D32"
                                             TextColor="White"
+                                            CornerRadius="10"
                                             Clicked="OnSeguroClicked"
                                             CommandParameter="{Binding .}" />
 
                                         <Button
+                                            Grid.Column="1"
                                             Text="Ausente"
                                             BackgroundColor="#EF6C00"
                                             TextColor="White"
+                                            CornerRadius="10"
                                             Clicked="OnAusenteClicked"
                                             CommandParameter="{Binding .}" />
 
                                         <Button
-                                            Text="Ver ubicación"
+                                            Grid.Column="2"
+                                            Text="{Binding TextoBotonUbicacion}"
                                             BackgroundColor="#1565C0"
                                             TextColor="White"
+                                            CornerRadius="10"
                                             Clicked="OnVerUbicacionClicked"
                                             CommandParameter="{Binding .}" />
 
-                                    </HorizontalStackLayout>
+                                    </Grid>
+
+                                    <!-- Ubicación de esta persona -->
+                                    <Border
+                                        IsVisible="{Binding UbicacionVisible}"
+                                        Stroke="#1565C0"
+                                        StrokeThickness="1"
+                                        StrokeShape="RoundRectangle 12"
+                                        BackgroundColor="#F8FBFF"
+                                        Padding="12"
+                                        Margin="0,6,0,0">
+
+                                        <VerticalStackLayout Spacing="6">
+
+                                            <Label
+                                                Text="📍 Ubicación estimada"
+                                                FontSize="15"
+                                                FontAttributes="Bold"
+                                                TextColor="#1565C0" />
+
+                                            <Label
+                                                Text="{Binding ZonaNombreTexto}"
+                                                FontSize="17"
+                                                FontAttributes="Bold"
+                                                TextColor="#212121" />
+
+                                            <Label
+                                                Text="{Binding PisoTexto}"
+                                                FontSize="15"
+                                                TextColor="#424242" />
+
+                                            <Label
+                                                Text="{Binding ConfianzaTexto}"
+                                                FontSize="14"
+                                                TextColor="#616161" />
+
+                                            <Label
+                                                Text="{Binding UltimaActualizacionTexto}"
+                                                FontSize="13"
+                                                TextColor="#757575" />
+
+                                        </VerticalStackLayout>
+
+                                    </Border>
 
                                 </VerticalStackLayout>
 
@@ -147,53 +229,6 @@
                     </CollectionView.ItemTemplate>
 
                 </CollectionView>
-
-                <!-- Ubicación -->
-                <Frame
-                    x:Name="UbicacionFrame"
-                    IsVisible="False"
-                    BorderColor="#1565C0"
-                    BackgroundColor="White"
-                    CornerRadius="10"
-                    Padding="16">
-
-                    <VerticalStackLayout Spacing="8">
-
-                        <Label
-                            Text="📍 Ubicación actual"
-                            FontSize="14"
-                            FontAttributes="Bold"
-                            TextColor="#1565C0"/>
-
-                        <Label
-                            x:Name="VictimaUbicacionLabel"
-                            FontSize="20"
-                            FontAttributes="Bold"
-                            TextColor="#212121"/>
-
-                        <Label
-                            x:Name="ZonaNombreLabel"
-                            FontSize="18"
-                            TextColor="#212121"/>
-
-                        <Label
-                            x:Name="PisoLabel"
-                            FontSize="16"
-                            TextColor="#424242"/>
-
-                        <Label
-                            x:Name="ConfianzaLabel"
-                            FontSize="14"
-                            TextColor="#616161"/>
-
-                        <Label
-                            x:Name="UltimaActualizacionLabel"
-                            FontSize="13"
-                            TextColor="#757575"/>
-
-                    </VerticalStackLayout>
-
-                </Frame>
 
             </VerticalStackLayout>
 

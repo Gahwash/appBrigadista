@@ -31,7 +31,7 @@ namespace appBrigadista.Pages
 
             _mqtt.Desconectado += () =>
             {
-                EstadoMqttLabel.Text = "No hay conexion al nodo";
+                EstadoMqttLabel.Text = "No hay conexión al nodo";
             };
         }
 
@@ -50,7 +50,7 @@ namespace appBrigadista.Pages
             catch (Exception ex)
             {
                 EstadoMqttLabel.Text =
-                    $"Error MQTT: {ex.Message}";
+                    $"Error de conexión MQTT: {ex.Message}";
             }
         }
 
@@ -80,7 +80,8 @@ namespace appBrigadista.Pages
         }
         private void CerrarSesion_Clicked(object sender, EventArgs e)
         {
-            Preferences.Clear();
+            //Preferences.Clear();
+            TokenService.LimpiarSesion();
             Application.Current!.Windows[0].Page = new NavigationPage(new LoginPage());
         }
     }

@@ -29,7 +29,8 @@ namespace appBrigadista.Services
             try
             {
                 var req = new HttpRequestMessage(HttpMethod.Get, "/api/ubicacion");
-                req.Headers.Add("X-Role", "BRIGADISTA");
+                await TokenService.AgregarAuthorizationAsync(req);
+                //req.Headers.Add("X-Role", "BRIGADISTA");
 
                 var resp = await _httpClient.SendAsync(req);
 

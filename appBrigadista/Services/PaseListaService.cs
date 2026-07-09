@@ -3,6 +3,9 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Text.Json;
+using System.Net.Http.Headers;
+using appBrigadista.Models;
+using System.Diagnostics;
 
 namespace appBrigadista.Services
 {
@@ -10,15 +13,65 @@ namespace appBrigadista.Services
     {
         private static readonly string BASE = ApiConfig.BaseUrl;
         private readonly HttpClient _http = new();
-       
+
         public async Task<List<PaseListaEntry>> ObtenerAsync()
         {
-            var req = new HttpRequestMessage(HttpMethod.Get, $"{BASE}/api/pase-lista");
-            req.Headers.Add("X-Role", "BRIGADISTA");
-            var res = await _http.SendAsync(req);
-            var json = await res.Content.ReadAsStringAsync();
-            return JsonSerializer.Deserialize<List<PaseListaEntry>>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true})
-                   ?? new List<PaseListaEntry>();
+            try
+            {
+                var req = new HttpRequestMessage(
+                    HttpMethod.Get,
+                    $"{BASE}/api/pase-lista");
+
+                await TokenService.AgregarAuthorizationAsync(req);
+
+                // Temporal: el nodo todavía lo pide en PaseListaController
+                req.Headers.Add("X-Role", "BRIGADISTA");
+
+                var res = await _http.SendAsync(req);
+                var json = await res.Content.ReadAsStringAsync();
+
+                Debug.WriteLine("====== PASE LISTA ======");
+                Debug.WriteLine($"URL: {req.RequestUri}");
+                Debug.WriteLine($"Status: {(int)res.StatusCode} {res.StatusCode}");
+                Debug.WriteLine($"Respuesta: {json}");
+                Debug.WriteLine("========================");
+
+                if (!res.IsSuccessStatusCode)
+                {
+                    Console.WriteLine(
+                        $"Error al obtener pase de lista. Código: {(int)res.StatusCode}. Respuesta: {json}");
+
+                    return new List<PaseListaEntry>();
+                }
+
+                if (string.IsNullOrWhiteSpace(json))
+                {
+                    Console.WriteLine("El nodo respondió vacío en /api/pase-lista.");
+                    return new List<PaseListaEntry>();
+                }
+
+                return JsonSerializer.Deserialize<List<PaseListaEntry>>(
+                    json,
+                    new JsonSerializerOptions
+                    {
+                        PropertyNameCaseInsensitive = true
+                    }) ?? new List<PaseListaEntry>();
+            }
+            catch (HttpRequestException ex)
+            {
+                Console.WriteLine($"Error de conexión con el nodo FOG: {ex.Message}");
+                return new List<PaseListaEntry>();
+            }
+            catch (JsonException ex)
+            {
+                Console.WriteLine($"Error al leer JSON del pase de lista: {ex.Message}");
+                return new List<PaseListaEntry>();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error inesperado en PaseListaService.ObtenerAsync: {ex.Message}");
+                return new List<PaseListaEntry>();
+            }
         }
 
         ////mock de pase de lista 
@@ -72,18 +125,49 @@ namespace appBrigadista.Services
         //    }
         //}
 
-        public async Task ActualizarEstadoAsync(string victimaId, string nuevoEstado)
+        public async Task<bool> ActualizarEstadoAsync(
+    string victimaId,
+    string estado)
         {
-            var body = JsonSerializer.Serialize(new
+            try
             {
-                estado = nuevoEstado,
-                brigadistaId = "brigadista-001"
-            });
-            var req = new HttpRequestMessage(
-                HttpMethod.Put, $"{BASE}/api/pase-lista/{victimaId}/estado");
-            req.Headers.Add("X-Role", "BRIGADISTA");
-            req.Content = new StringContent(body, Encoding.UTF8, "application/json");
-            await _http.SendAsync(req);
+                var body = JsonSerializer.Serialize(new
+                {
+                    estado
+                });
+
+                var req = new HttpRequestMessage(
+                    HttpMethod.Put,
+                    $"{BASE}/api/pase-lista/{victimaId}/estado");
+
+                await TokenService.AgregarAuthorizationAsync(req);
+
+                // Temporal: el nodo todavía lo pide en PaseListaController
+                req.Headers.Add("X-Role", "BRIGADISTA");
+
+                req.Content = new StringContent(
+                    body,
+                    Encoding.UTF8,
+                    "application/json");
+
+                var res = await _http.SendAsync(req);
+                var respuesta = await res.Content.ReadAsStringAsync();
+
+                if (!res.IsSuccessStatusCode)
+                {
+                    Console.WriteLine(
+                        $"Error al actualizar estado. Código: {(int)res.StatusCode}. Respuesta: {respuesta}");
+
+                    return false;
+                }
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error en ActualizarEstadoAsync: {ex.Message}");
+                return false;
+            }
         }
     }
 }

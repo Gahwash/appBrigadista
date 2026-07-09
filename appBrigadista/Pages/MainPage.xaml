@@ -14,37 +14,103 @@
     <ScrollView>
 
         <VerticalStackLayout
-            Padding="30"
-            Spacing="25"
-            VerticalOptions="Center">
+            Padding="22"
+            Spacing="18">
 
-            <Label
-                Text="APP BRIGADISTA"
-                FontSize="32"
-                HorizontalOptions="Center" />
-
+            <!-- Encabezado -->
             <Border
-                BackgroundColor="LightGreen"
-                StrokeThickness="0"
-                Padding="10">
+                BackgroundColor="White"
+                Stroke="#DDDDDD"
+                StrokeThickness="1"
+                StrokeShape="RoundRectangle 16"
+                Padding="18">
 
-                <Label
-                    x:Name="EstadoMqttLabel"
-                    Text="Esperando alertas..."
-                    TextColor="Black"
-                    FontSize="18"
-                    HorizontalOptions="Center" />
+                <VerticalStackLayout Spacing="6">
+
+                    <Label
+                        Text="App Brigadista"
+                        FontSize="30"
+                        FontAttributes="Bold"
+                        TextColor="#212121"
+                        HorizontalOptions="Center" />
+
+                    <Label
+                        Text="Sistema de apoyo durante emergencia"
+                        FontSize="15"
+                        TextColor="#616161"
+                        HorizontalOptions="Center" />
+
+                </VerticalStackLayout>
 
             </Border>
 
-            <Label
-                Text="Esperando 
-                ..."
-                FontSize="22"
-                HorizontalOptions="Center" />
+            <!-- Estado de conexión -->
+            <Border
+                BackgroundColor="#F8FBFF"
+                Stroke="#1565C0"
+                StrokeThickness="1"
+                StrokeShape="RoundRectangle 16"
+                Padding="18">
 
+                <VerticalStackLayout Spacing="10">
+
+                    <Label
+                        Text="Estado del nodo FOG"
+                        FontSize="18"
+                        FontAttributes="Bold"
+                        TextColor="#1565C0" />
+
+                    <Label
+                        x:Name="EstadoMqttLabel"
+                        Text="Conectando con el nodo FOG..."
+                        FontSize="17"
+                        TextColor="#212121" />
+
+                    
+
+                </VerticalStackLayout>
+
+            </Border>
+
+            <!-- Estado de espera -->
+            <Border
+                BackgroundColor="White"
+                Stroke="#DDDDDD"
+                StrokeThickness="1"
+                StrokeShape="RoundRectangle 16"
+                Padding="18">
+
+                <VerticalStackLayout Spacing="8">
+
+                    <Label
+                        Text="Modo de operación"
+                        FontSize="18"
+                        FontAttributes="Bold"
+                        TextColor="#212121" />
+
+                    <Label
+                        Text="Esperando alerta"
+                        FontSize="20"
+                        FontAttributes="Bold"
+                        TextColor="#2E7D32" />
+
+                    <Label
+                        Text="Cuando se publique una alerta, se abrirá automáticamente la pantalla de emergencia."
+                        FontSize="14"
+                        TextColor="#616161" />
+
+                </VerticalStackLayout>
+
+            </Border>
+
+            <!-- Sesión -->
             <Button
                 Text="Cerrar sesión"
+                BackgroundColor="#C62828"
+                TextColor="White"
+                CornerRadius="12"
+                HeightRequest="48"
+                FontAttributes="Bold"
                 Clicked="CerrarSesion_Clicked" />
 
         </VerticalStackLayout>

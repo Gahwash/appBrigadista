@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<ContentPage
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    x:Class="appBrigadista.Pages.IncidentesPage"
+    Title="Incidentes"
+    BackgroundColor="White">
+
+    <Grid RowDefinitions="Auto,*">
+
+        <VerticalStackLayout
+            Grid.Row="0"
+            Padding="20"
+            Spacing="12">
+
+            <Label
+                Text="Incidentes reportados"
+                FontSize="26"
+                FontAttributes="Bold"
+                TextColor="#212121" />
+
+            <Label
+                Text="Consulta los incidentes registrados durante la emergencia."
+                FontSize="15"
+                TextColor="#616161" />
+
+            <Grid
+    ColumnDefinitions="*,*"
+    ColumnSpacing="8">
+
+                <Button
+                    Grid.Column="0"
+                    Text="Reportar incidente"
+                    BackgroundColor="#1565C0"
+                    TextColor="White"
+                    CornerRadius="10"
+                    Clicked="OnReportarIncidenteClicked" />
+
+                <Button
+                    Grid.Column="1"
+                    Text="Actualizar lista"
+                    BackgroundColor="#455A64"
+                    TextColor="White"
+                    CornerRadius="10"
+                    Clicked="OnActualizarClicked" />
+
+            </Grid>
+
+            <Button
+                Text="Regresar a emergencia"
+                BackgroundColor="#757575"
+                TextColor="White"
+                CornerRadius="10"
+                Clicked="OnRegresarClicked" />
+
+        </VerticalStackLayout>
+
+        <CollectionView
+            x:Name="IncidentesCollection"
+            Grid.Row="1"
+            Margin="20,0,20,20">
+
+            <CollectionView.EmptyView>
+                <Label
+                    Text="No hay incidentes reportados."
+                    TextColor="#757575"
+                    HorizontalOptions="Center"
+                    VerticalOptions="Center" />
+            </CollectionView.EmptyView>
+
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+
+                    <Border
+                        Margin="0,0,0,12"
+                        Padding="14"
+                        BackgroundColor="White"
+                        Stroke="#DDDDDD"
+                        StrokeThickness="1"
+                        StrokeShape="RoundRectangle 12">
+
+                        <VerticalStackLayout Spacing="6">
+
+                            <Label
+                                Text="{Binding Tipo}"
+                                FontSize="18"
+                                FontAttributes="Bold"
+                                TextColor="#212121" />
+
+                            <Label
+                                Text="{Binding Descripcion}"
+                                FontSize="14"
+                                TextColor="#424242" />
+
+                            <Label
+                                Text="{Binding ZonaNombre}"
+                                FontSize="14"
+                                TextColor="#1565C0"
+                                FontAttributes="Bold" />
+
+                            <Label
+                                Text="{Binding PisoTexto}"
+                                FontSize="13"
+                                TextColor="#616161" />
+
+                            <HorizontalStackLayout Spacing="8">
+
+                                <Label
+                                    Text="Estado:"
+                                    FontSize="13"
+                                    TextColor="#616161" />
+
+                                <Label
+                                    Text="{Binding Estado}"
+                                    FontSize="13"
+                                    FontAttributes="Bold"
+                                    TextColor="#EF6C00" />
+
+                            </HorizontalStackLayout>
+
+                            <Label
+                                Text="{Binding FechaTexto}"
+                                FontSize="12"
+                                TextColor="#757575" />
+
+                        </VerticalStackLayout>
+
+                    </Border>
+
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+
+        </CollectionView>
+
+    </Grid>
+
+</ContentPage>

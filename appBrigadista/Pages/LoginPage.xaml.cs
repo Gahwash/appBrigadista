@@ -50,6 +50,8 @@ namespace appBrigadista.Pages
                 Preferences.Set("usuario_rol", usuario.Rol);
                 Preferences.Set("sesion_iniciada", true);
 
+                await TokenService.GuardarTokenAsync(usuario.Token); //token guardado en almacenamiento seguro
+
                 Application.Current!.Windows[0].Page = new AppShell();
             }
             catch (Exception ex)

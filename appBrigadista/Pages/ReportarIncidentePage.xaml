@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<ContentPage
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    x:Class="appBrigadista.Pages.ReportarIncidentePage"
+    Title="Reportar incidente"
+    BackgroundColor="#F5F5F5">
+
+    <ScrollView>
+
+        <VerticalStackLayout
+            Padding="20"
+            Spacing="16">
+
+            <!-- Título -->
+            <Label
+                Text="Reportar incidente"
+                FontSize="26"
+                FontAttributes="Bold"
+                TextColor="#212121" />
+
+            <Label
+                Text="Selecciona el tipo de incidente y la ubicación donde ocurrió."
+                FontSize="15"
+                TextColor="#616161" />
+
+            <!-- Tipo de incidente -->
+            <VerticalStackLayout Spacing="6">
+
+                <Label
+                    Text="Tipo de incidente"
+                    FontSize="14"
+                    FontAttributes="Bold"
+                    TextColor="#424242" />
+
+                <Border
+                    BackgroundColor="White"
+                    Stroke="#BDBDBD"
+                    StrokeThickness="1"
+                    StrokeShape="RoundRectangle 10"
+                    Padding="14">
+
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnSeleccionarTipoTapped" />
+                    </Border.GestureRecognizers>
+
+                    <Grid ColumnDefinitions="*,Auto">
+
+                        <Label
+                            x:Name="TipoSeleccionadoLabel"
+                            Text="Selecciona una opción"
+                            FontSize="16"
+                            TextColor="#757575"
+                            VerticalOptions="Center" />
+
+                        <Label
+                            Grid.Column="1"
+                            Text="▼"
+                            FontSize="16"
+                            TextColor="#616161"
+                            VerticalOptions="Center"
+                            Margin="10,0,0,0" />
+
+                    </Grid>
+
+                </Border>
+
+            </VerticalStackLayout>
+
+            <!-- Ubicación del incidente -->
+            <VerticalStackLayout Spacing="6">
+
+                <Label
+                    Text="Ubicación del incidente"
+                    FontSize="14"
+                    FontAttributes="Bold"
+                    TextColor="#424242" />
+
+                <Border
+                    BackgroundColor="White"
+                    Stroke="#BDBDBD"
+                    StrokeThickness="1"
+                    StrokeShape="RoundRectangle 10"
+                    Padding="14">
+
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnSeleccionarZonaTapped" />
+                    </Border.GestureRecognizers>
+
+                    <Grid ColumnDefinitions="*,Auto">
+
+                        <Label
+                            x:Name="ZonaSeleccionadaLabel"
+                            Text="Selecciona una ubicación"
+                            FontSize="16"
+                            TextColor="#757575"
+                            VerticalOptions="Center" />
+
+                        <Label
+                            Grid.Column="1"
+                            Text="▼"
+                            FontSize="16"
+                            TextColor="#616161"
+                            VerticalOptions="Center"
+                            Margin="10,0,0,0" />
+
+                    </Grid>
+
+                </Border>
+
+            </VerticalStackLayout>
+
+            <!-- Descripción -->
+            <VerticalStackLayout Spacing="6">
+
+                <Label
+                    Text="Descripción"
+                    FontSize="14"
+                    FontAttributes="Bold"
+                    TextColor="#424242" />
+
+                <Border
+                    BackgroundColor="White"
+                    Stroke="#BDBDBD"
+                    StrokeThickness="1"
+                    StrokeShape="RoundRectangle 10"
+                    Padding="10">
+
+                    <Editor
+                        x:Name="DescripcionEditor"
+                        Placeholder="Descripción opcional"
+                        AutoSize="TextChanges"
+                        HeightRequest="120"
+                        TextColor="#212121"
+                        PlaceholderColor="#757575"
+                        BackgroundColor="Transparent" />
+
+                </Border>
+
+            </VerticalStackLayout>
+
+            <!-- Botón enviar -->
+            <Button
+                Text="Enviar reporte"
+                BackgroundColor="#1565C0"
+                TextColor="White"
+                CornerRadius="10"
+                HeightRequest="48"
+                FontAttributes="Bold"
+                Clicked="OnEnviarClicked" />
+
+            <!-- Botón cancelar -->
+            <Button
+                Text="Cancelar"
+                BackgroundColor="#757575"
+                TextColor="White"
+                CornerRadius="10"
+                HeightRequest="48"
+                Clicked="OnCancelarClicked" />
+
+        </VerticalStackLayout>
+
+    </ScrollView>
+
+</ContentPage>

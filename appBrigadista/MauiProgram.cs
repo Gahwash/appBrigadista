@@ -54,6 +54,9 @@ namespace appBrigadista
             builder.Services.AddSingleton<MqttBrigadistaService>();
             builder.Services.AddSingleton<PaseListaService>();
             builder.Services.AddSingleton<UbicacionService>();
+            builder.Services.AddSingleton<IncidenteService>();
+            builder.Services.AddSingleton<RadioMapService>();
+
 
             builder.Services.AddSingleton<MainPageModel>();
 

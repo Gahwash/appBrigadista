@@ -11,6 +11,8 @@ namespace appBrigadista.Pages
     {
         private readonly PaseListaService _paseListaService;
         private readonly UbicacionService _ubicacionService;
+        private readonly IncidenteService _incidenteService;
+        private readonly RadioMapService _radioMapService;
 
         private AlertaMensaje _alerta;
         private List<PaseListaEntry> _paseLista = new();
@@ -40,12 +42,16 @@ namespace appBrigadista.Pages
 
         public EmergenciaPage(
             PaseListaService paseListaService,
-            UbicacionService ubicacionService)
+            UbicacionService ubicacionService,
+            IncidenteService incidenteService,
+            RadioMapService radioMapService)
         {
             InitializeComponent();
 
             _paseListaService = paseListaService;
             _ubicacionService = ubicacionService;
+            _incidenteService = incidenteService;
+            _radioMapService = radioMapService;
         }
 
         protected override async void OnAppearing()
@@ -159,5 +165,13 @@ namespace appBrigadista.Pages
             persona.ActualizarUbicacion(ubicacion);
         }
 
+
+        private async void OnIncidentesClicked(object sender, EventArgs e)
+        {
+            await Navigation.PushModalAsync(
+                new IncidentesPage(
+                    _incidenteService,
+                    _radioMapService));
+        }
     }
 }
