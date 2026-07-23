@@ -8,6 +8,9 @@ namespace appBrigadista.Pages
     {
         private readonly MqttBrigadistaService _mqtt;
 
+        private bool _cerrandoPorFinEmergencia = false;
+        private bool _navegandoAEmergencia = false;
+
         public MainPage(
             MainPageModel model,
             MqttBrigadistaService mqtt)
@@ -18,34 +21,45 @@ namespace appBrigadista.Pages
 
             _mqtt = mqtt;
 
-            // ALERTA RECIBIDA
             _mqtt.AlertaRecibida += OnAlertaRecibida;
-
-            // CAMBIO DE MODO
             _mqtt.ModoActualizado += OnModoActualizado;
 
             _mqtt.Conectado += () =>
             {
-                EstadoMqttLabel.Text = "Conectado al nodo";
+                MainThread.BeginInvokeOnMainThread(() =>
+                {
+                    EstadoMqttLabel.Text = "Conectado al nodo FOG";
+                });
             };
 
             _mqtt.Desconectado += () =>
             {
-                EstadoMqttLabel.Text = "No hay conexión al nodo";
+                MainThread.BeginInvokeOnMainThread(() =>
+                {
+                    EstadoMqttLabel.Text = "No hay conexión con el nodo FOG";
+                });
             };
         }
 
         protected override async void OnAppearing()
         {
             base.OnAppearing();
-            //ESTADO INICIAL SIEMPRE
-            EstadoMqttLabel.Text = "Esperando...";
+
+            if (_mqtt.EstaConectado)
+            {
+                EstadoMqttLabel.Text = "Conectado al nodo FOG";
+                return;
+            }
+
+            EstadoMqttLabel.Text = "Conectando con el nodo FOG...";
 
             try
             {
-            
                 await _mqtt.ConectarAsync();
 
+                EstadoMqttLabel.Text = _mqtt.EstaConectado
+                    ? "Conectado al nodo FOG"
+                    : "Conectando con el nodo FOG...";
             }
             catch (Exception ex)
             {
@@ -54,35 +68,85 @@ namespace appBrigadista.Pages
             }
         }
 
-        private async void OnAlertaRecibida(
-            AlertaMensaje alerta)
+        private async void OnAlertaRecibida(AlertaMensaje alerta)
         {
-            await DisplayAlertAsync(
-                "ALERTA",
-                alerta.Mensaje,
-                "OK");
+            if (_navegandoAEmergencia)
+                return;
 
-            await Shell.Current.GoToAsync(
-                nameof(EmergenciaPage),
-                true,
-                new Dictionary<string, object>
+            _navegandoAEmergencia = true;
+
+            try
+            {
+                await MainThread.InvokeOnMainThreadAsync(async () =>
                 {
-                    ["alerta"] = alerta
+                    await DisplayAlertAsync(
+                        "Alerta sísmica",
+                        alerta.Mensaje,
+                        "Aceptar");
+
+                    await Shell.Current.GoToAsync(
+                        nameof(EmergenciaPage),
+                        true,
+                        new Dictionary<string, object>
+                        {
+                            ["alerta"] = alerta
+                        });
                 });
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(
+                    $"Error al abrir emergencia: {ex.Message}");
+            }
+            finally
+            {
+                _navegandoAEmergencia = false;
+            }
         }
 
         private async void OnModoActualizado(string modo)
         {
-            if (modo == "NORMAL")
+            if (modo != "NORMAL")
+                return;
+
+            if (_cerrandoPorFinEmergencia)
+                return;
+
+            _cerrandoPorFinEmergencia = true;
+
+            try
             {
-                await Shell.Current.Navigation.PopToRootAsync();
+                await MainThread.InvokeOnMainThreadAsync(async () =>
+                {
+                    var nav = Shell.Current.Navigation;
+
+                    while (nav.ModalStack.Count > 0)
+                    {
+                        await nav.PopModalAsync(false);
+                    }
+
+                    await nav.PopToRootAsync(false);
+
+                    EstadoMqttLabel.Text = "Conectado al nodo FOG";
+                });
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(
+                    $"Error al cerrar emergencia: {ex.Message}");
+            }
+            finally
+            {
+                _cerrandoPorFinEmergencia = false;
             }
         }
+
         private void CerrarSesion_Clicked(object sender, EventArgs e)
         {
-            //Preferences.Clear();
             TokenService.LimpiarSesion();
-            Application.Current!.Windows[0].Page = new NavigationPage(new LoginPage());
+
+            Application.Current!.Windows[0].Page =
+                new NavigationPage(new LoginPage());
         }
     }
 }

@@ -145,7 +145,7 @@
                                         TextColor="#1565C0" />
 
                                     <Grid
-                                        ColumnDefinitions="*,*,*"
+                                        ColumnDefinitions="*,*,*,*"
                                         ColumnSpacing="8">
 
                                         <Button
@@ -173,6 +173,14 @@
                                             TextColor="White"
                                             CornerRadius="10"
                                             Clicked="OnVerUbicacionClicked"
+                                            CommandParameter="{Binding .}" />
+                                        <Button
+                                            Grid.Column="3"
+                                            Text="{Binding TextoBotonDatosMedicos}"
+                                            BackgroundColor="#6A1B9A"
+                                            TextColor="White"
+                                            CornerRadius="10"
+                                            Clicked="OnVerDatosMedicosClicked"
                                             CommandParameter="{Binding .}" />
 
                                     </Grid>
@@ -213,6 +221,49 @@
 
                                             <Label
                                                 Text="{Binding UltimaActualizacionTexto}"
+                                                FontSize="13"
+                                                TextColor="#757575" />
+
+                                        </VerticalStackLayout>
+
+                                    </Border>
+                                    <!-- Datos médicos de esta persona -->
+                                    <Border
+                                        IsVisible="{Binding DatosMedicosVisible}"
+                                        Stroke="#6A1B9A"
+                                        StrokeThickness="1"
+                                        StrokeShape="RoundRectangle 12"
+                                        BackgroundColor="#FBF8FF"
+                                        Padding="12"
+                                        Margin="0,6,0,0">
+
+                                        <VerticalStackLayout Spacing="6">
+
+                                            <Label
+                                                Text="🩺 Datos médicos"
+                                                FontSize="15"
+                                                FontAttributes="Bold"
+                                                TextColor="#6A1B9A" />
+
+                                            <Label
+                                                Text="{Binding TipoSangreTexto}"
+                                                FontSize="15"
+                                                TextColor="#212121" />
+
+                                            <Label
+                                                Text="{Binding AlergiasTexto}"
+                                                FontSize="15"
+                                                TextColor="#424242" />
+
+                                            <Label
+                                                Text="{Binding CondicionesTexto}"
+                                                FontSize="15"
+                                                TextColor="#424242" />
+
+                                          
+
+                                            <Label
+                                                Text="{Binding FechaDatosMedicosTexto}"
                                                 FontSize="13"
                                                 TextColor="#757575" />
 

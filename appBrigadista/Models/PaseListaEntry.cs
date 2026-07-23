@@ -29,6 +29,7 @@ namespace appBrigadista.Models
         public long? TsCambio { get; set; }
 
         private bool _ubicacionVisible;
+        private bool _datosMedicosVisible;
 
         [JsonIgnore]
         public bool UbicacionVisible
@@ -81,6 +82,48 @@ namespace appBrigadista.Models
             }
         }
 
+        [JsonIgnore]
+        public bool DatosMedicosVisible
+        {
+            get => _datosMedicosVisible;
+            set
+            {
+                if (_datosMedicosVisible == value)
+                    return;
+
+                _datosMedicosVisible = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(TextoBotonDatosMedicos));
+            }
+        }
+
+        [JsonIgnore]
+        public DatosMedicosVictima? DatosMedicosActual { get; private set; }
+
+        [JsonIgnore]
+        public string TextoBotonDatosMedicos =>
+            DatosMedicosVisible ? "Cerrar" : "Datos médicos";
+
+        [JsonIgnore]
+        public string TipoSangreTexto =>
+            DatosMedicosActual?.TipoSangreTexto ?? "Tipo de sangre: no disponible";
+
+        [JsonIgnore]
+        public string AlergiasTexto =>
+            DatosMedicosActual?.AlergiasTexto ?? "Alergias: no disponibles";
+
+        [JsonIgnore]
+        public string CondicionesTexto =>
+            DatosMedicosActual?.CondicionesTexto ?? "Condiciones médicas: no disponibles";
+
+        [JsonIgnore]
+        public string ConsentimientoTexto =>
+            DatosMedicosActual?.ConsentimientoTexto ?? "Consentimiento: no disponible";
+
+        [JsonIgnore]
+        public string FechaDatosMedicosTexto =>
+            DatosMedicosActual?.FechaTexto ?? "";
+
         public void ActualizarUbicacion(UbicacionVictima? ubicacion)
         {
             UbicacionActual = ubicacion;
@@ -107,6 +150,28 @@ namespace appBrigadista.Models
         private void OnPropertyChanged([CallerMemberName] string? propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        public void ActualizarDatosMedicos(DatosMedicosVictima? datos)
+        {
+            DatosMedicosActual = datos;
+
+            OnPropertyChanged(nameof(TipoSangreTexto));
+            OnPropertyChanged(nameof(AlergiasTexto));
+            OnPropertyChanged(nameof(CondicionesTexto));
+            OnPropertyChanged(nameof(ConsentimientoTexto));
+            OnPropertyChanged(nameof(FechaDatosMedicosTexto));
+        }
+
+        public void MostrarDatosMedicos(DatosMedicosVictima? datos)
+        {
+            ActualizarDatosMedicos(datos);
+            DatosMedicosVisible = true;
+        }
+
+        public void OcultarDatosMedicos()
+        {
+            DatosMedicosVisible = false;
         }
     }
 }

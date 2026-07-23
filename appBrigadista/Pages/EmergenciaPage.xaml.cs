@@ -13,6 +13,7 @@ namespace appBrigadista.Pages
         private readonly UbicacionService _ubicacionService;
         private readonly IncidenteService _incidenteService;
         private readonly RadioMapService _radioMapService;
+        private readonly DatosMedicosService _datosMedicosService;
 
         private AlertaMensaje _alerta;
         private List<PaseListaEntry> _paseLista = new();
@@ -44,7 +45,8 @@ namespace appBrigadista.Pages
             PaseListaService paseListaService,
             UbicacionService ubicacionService,
             IncidenteService incidenteService,
-            RadioMapService radioMapService)
+            RadioMapService radioMapService,
+            DatosMedicosService datosMedicosService)
         {
             InitializeComponent();
 
@@ -52,6 +54,7 @@ namespace appBrigadista.Pages
             _ubicacionService = ubicacionService;
             _incidenteService = incidenteService;
             _radioMapService = radioMapService;
+            _datosMedicosService = datosMedicosService;
         }
 
         protected override async void OnAppearing()
@@ -77,8 +80,10 @@ namespace appBrigadista.Pages
             await _ubicacionService.DetenerAsync();
 
             foreach (var persona in _paseLista)
+            {
                 persona.OcultarUbicacion();
-
+                persona.OcultarDatosMedicos();
+            }
             _victimaSeleccionada = null;
         }
 
@@ -146,8 +151,10 @@ namespace appBrigadista.Pages
 
             // Cerrar cualquier otra ubicación abierta
             foreach (var item in _paseLista)
+            {
                 item.OcultarUbicacion();
-
+                item.OcultarDatosMedicos();
+            }
             _victimaSeleccionada = persona;
 
             var ubicacion = _ubicacionService.ObtenerUbicacion(persona.VictimaId);
@@ -172,6 +179,40 @@ namespace appBrigadista.Pages
                 new IncidentesPage(
                     _incidenteService,
                     _radioMapService));
+        }
+
+        private async void OnVerDatosMedicosClicked(object sender, EventArgs e)
+        {
+            if (sender is not Button boton)
+                return;
+
+            if (boton.CommandParameter is not PaseListaEntry persona)
+                return;
+
+            if (persona.DatosMedicosVisible)
+            {
+                persona.OcultarDatosMedicos();
+
+                if (_victimaSeleccionada?.VictimaId == persona.VictimaId)
+                    _victimaSeleccionada = null;
+
+                return;
+            }
+
+            foreach (var item in _paseLista)
+            {
+                item.OcultarUbicacion();
+                item.OcultarDatosMedicos();
+            }
+
+            _victimaSeleccionada = persona;
+
+            // Abrimos el panel primero, aunque todavía no haya datos.
+            persona.MostrarDatosMedicos(null);
+
+            var datos = await _datosMedicosService.ObtenerAsync(persona.VictimaId);
+
+            persona.MostrarDatosMedicos(datos);
         }
     }
 }
