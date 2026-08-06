@@ -7,19 +7,23 @@ namespace appBrigadista.Pages
     public partial class MainPage : ContentPage
     {
         private readonly MqttBrigadistaService _mqtt;
+        private readonly ChatBrigadistasService _chatService;
 
         private bool _cerrandoPorFinEmergencia = false;
         private bool _navegandoAEmergencia = false;
+        private static bool _aperturaEmergenciaGlobal = false;
 
         public MainPage(
             MainPageModel model,
-            MqttBrigadistaService mqtt)
+            MqttBrigadistaService mqtt,
+            ChatBrigadistasService chatService)
         {
             InitializeComponent();
 
             BindingContext = model;
 
             _mqtt = mqtt;
+            _chatService = chatService;
 
             _mqtt.AlertaRecibida += OnAlertaRecibida;
             _mqtt.ModoActualizado += OnModoActualizado;
@@ -70,21 +74,46 @@ namespace appBrigadista.Pages
 
         private async void OnAlertaRecibida(AlertaMensaje alerta)
         {
-            if (_navegandoAEmergencia)
+            if (alerta == null)
+                return;
+
+            if (_navegandoAEmergencia || _aperturaEmergenciaGlobal)
                 return;
 
             _navegandoAEmergencia = true;
+            _aperturaEmergenciaGlobal = true;
 
             try
             {
                 await MainThread.InvokeOnMainThreadAsync(async () =>
                 {
-                    await DisplayAlertAsync(
-                        "Alerta sísmica",
-                        alerta.Mensaje,
-                        "Aceptar");
+                    var shell = Shell.Current;
 
-                    await Shell.Current.GoToAsync(
+                    if (shell == null)
+                        return;
+
+                    var paginaActual = shell.CurrentPage;
+
+                    if (paginaActual is EmergenciaPage)
+                        return;
+
+                    if (paginaActual != null)
+                    {
+                        try
+                        {
+                            await paginaActual.DisplayAlertAsync(
+                                "Alerta sísmica",
+                                alerta.Mensaje ?? "Se recibió una alerta de emergencia.",
+                                "Aceptar");
+                        }
+                        catch (Exception ex)
+                        {
+                            System.Diagnostics.Debug.WriteLine(
+                                $"No se pudo mostrar alerta: {ex.Message}");
+                        }
+                    }
+
+                    await shell.GoToAsync(
                         nameof(EmergenciaPage),
                         true,
                         new Dictionary<string, object>
@@ -101,6 +130,7 @@ namespace appBrigadista.Pages
             finally
             {
                 _navegandoAEmergencia = false;
+                _aperturaEmergenciaGlobal = false;
             }
         }
 
@@ -147,6 +177,15 @@ namespace appBrigadista.Pages
 
             Application.Current!.Windows[0].Page =
                 new NavigationPage(new LoginPage());
+        }
+
+        private async void OnChatClicked(object sender, EventArgs e)
+        {
+            await Navigation.PushModalAsync(
+                new ChatBrigadistasPage(
+                    _chatService,
+                    _mqtt,
+                    desdeEmergencia: false));
         }
     }
 }

@@ -40,6 +40,15 @@
                         TextColor="#616161"
                         HorizontalOptions="Center" />
 
+                    <Button
+                        Text="Chat de brigadistas"
+                        BackgroundColor="#1565C0"
+                        TextColor="White"
+                        CornerRadius="12"
+                        HeightRequest="48"
+                        FontAttributes="Bold"
+                        Clicked="OnChatClicked" />
+
                 </VerticalStackLayout>
 
             </Border>

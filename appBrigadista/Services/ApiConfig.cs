@@ -6,8 +6,8 @@ namespace appBrigadista.Services
 {
     public class ApiConfig
     {
-        // Solo cambias esta IP cuando cambie el nodo FOG
-        public const string Host = "192.168.1.23";
+        // Cambiar esta IP cuando cambie el nodo FOG
+        public const string Host = "172.16.214.67";
 
         public const int ApiPort = 8080;
         public const int MqttPort = 1883;

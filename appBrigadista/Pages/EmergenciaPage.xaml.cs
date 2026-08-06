@@ -14,8 +14,10 @@ namespace appBrigadista.Pages
         private readonly IncidenteService _incidenteService;
         private readonly RadioMapService _radioMapService;
         private readonly DatosMedicosService _datosMedicosService;
+        private readonly ChatBrigadistasService _chatService;
+        private readonly MqttBrigadistaService _mqtt;
 
-        private AlertaMensaje _alerta;
+        private AlertaMensaje? _alerta;
         private List<PaseListaEntry> _paseLista = new();
         private PaseListaEntry? _victimaSeleccionada;
 
@@ -46,7 +48,9 @@ namespace appBrigadista.Pages
             UbicacionService ubicacionService,
             IncidenteService incidenteService,
             RadioMapService radioMapService,
-            DatosMedicosService datosMedicosService)
+            DatosMedicosService datosMedicosService,
+            ChatBrigadistasService chatService,
+            MqttBrigadistaService mqtt)
         {
             InitializeComponent();
 
@@ -55,6 +59,8 @@ namespace appBrigadista.Pages
             _incidenteService = incidenteService;
             _radioMapService = radioMapService;
             _datosMedicosService = datosMedicosService;
+            _chatService = chatService;
+            _mqtt = mqtt;
         }
 
         protected override async void OnAppearing()
@@ -213,6 +219,15 @@ namespace appBrigadista.Pages
             var datos = await _datosMedicosService.ObtenerAsync(persona.VictimaId);
 
             persona.MostrarDatosMedicos(datos);
+        }
+
+        private async void OnChatClicked(object sender, EventArgs e)
+        {
+            await Navigation.PushModalAsync(
+                new ChatBrigadistasPage(
+                    _chatService,
+                    _mqtt,
+                    desdeEmergencia: true));
         }
     }
 }

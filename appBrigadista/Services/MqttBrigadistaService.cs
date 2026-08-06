@@ -12,9 +12,12 @@ namespace appBrigadista.Services
 
         public event Action<AlertaMensaje>? AlertaRecibida;
         public event Action<string>? ModoActualizado;
+        
 
         public event Action? Conectado;
         public event Action? Desconectado;
+
+        public event Action<MensajeBrigadista>? MensajeBrigadistaRecibido;
 
         private static readonly string HOST = ApiConfig.Host;
         private static readonly int PORT = ApiConfig.MqttPort;
@@ -63,6 +66,7 @@ namespace appBrigadista.Services
 
             await _client.SubscribeAsync($"cinvestav/{EDIFICIO}/alertas");
             await _client.SubscribeAsync($"cinvestav/{EDIFICIO}/estado");
+            await _client.SubscribeAsync($"cinvestav/{EDIFICIO}/brigadistas");
         }
 
         private Task MensajeRecibidoAsync(MqttApplicationMessageReceivedEventArgs e)
@@ -119,6 +123,23 @@ namespace appBrigadista.Services
                     MainThread.BeginInvokeOnMainThread(() =>
                     {
                         ModoActualizado?.Invoke(dto.Modo);
+                    });
+                }
+                else if (topic == $"cinvestav/{EDIFICIO}/brigadistas")
+                {
+                    var mensaje = JsonSerializer.Deserialize<MensajeBrigadista>(
+                        payload,
+                        new JsonSerializerOptions
+                        {
+                            PropertyNameCaseInsensitive = true
+                        });
+
+                    if (mensaje == null)
+                        return Task.CompletedTask;
+
+                    MainThread.BeginInvokeOnMainThread(() =>
+                    {
+                        MensajeBrigadistaRecibido?.Invoke(mensaje);
                     });
                 }
             }

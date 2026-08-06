@@ -57,6 +57,7 @@ namespace appBrigadista
             builder.Services.AddSingleton<IncidenteService>();
             builder.Services.AddSingleton<RadioMapService>();
             builder.Services.AddSingleton<DatosMedicosService>();
+            builder.Services.AddSingleton<ChatBrigadistasService>();
 
 
             builder.Services.AddSingleton<MainPageModel>();

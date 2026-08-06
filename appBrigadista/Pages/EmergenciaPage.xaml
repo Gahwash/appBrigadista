@@ -10,39 +10,63 @@
     <Grid RowDefinitions="Auto,*">
 
         <!-- Barra superior -->
-        <Grid
+        <VerticalStackLayout
             Grid.Row="0"
             Padding="16,12"
-            ColumnDefinitions="*,Auto,Auto"
-            ColumnSpacing="8"
+            Spacing="10"
             BackgroundColor="White">
 
             <Label
                 Text="Emergencia"
                 FontSize="24"
                 FontAttributes="Bold"
-                TextColor="#212121"
-                VerticalOptions="Center" />
+                TextColor="#212121" />
 
-            <Button
-                Grid.Column="1"
-                Text="Incidentes"
-                BackgroundColor="#1565C0"
-                TextColor="White"
-                CornerRadius="10"
-                Padding="12,8"
-                Clicked="OnIncidentesClicked" />
+            <FlexLayout
+                Direction="Row"
+                Wrap="Wrap"
+                JustifyContent="Start"
+                AlignItems="Center">
 
-            <Button
-                Grid.Column="2"
-                Text="Croquis"
-                BackgroundColor="#455A64"
-                TextColor="White"
-                CornerRadius="10"
-                Padding="12,8"
-                Clicked="OnVerCroquisClicked" />
+                <Button
+                    Text="Incidentes"
+                    BackgroundColor="#1565C0"
+                    TextColor="White"
+                    CornerRadius="10"
+                    HeightRequest="40"
+                    MinimumWidthRequest="96"
+                    Padding="10,4"
+                    FontSize="13"
+                    Margin="0,0,8,8"
+                    Clicked="OnIncidentesClicked" />
 
-        </Grid>
+                <Button
+                    Text="Chat"
+                    BackgroundColor="DarkCyan"
+                    TextColor="White"
+                    CornerRadius="10"
+                    HeightRequest="40"
+                    MinimumWidthRequest="76"
+                    Padding="10,4"
+                    FontSize="13"
+                    Margin="0,0,8,8"
+                    Clicked="OnChatClicked" />
+
+                <Button
+                    Text="Croquis"
+                    BackgroundColor="#455A64"
+                    TextColor="White"
+                    CornerRadius="10"
+                    HeightRequest="40"
+                    MinimumWidthRequest="86"
+                    Padding="10,4"
+                    FontSize="13"
+                    Margin="0,0,8,8"
+                    Clicked="OnVerCroquisClicked" />
+
+            </FlexLayout>
+
+        </VerticalStackLayout>
 
         <ScrollView Grid.Row="1">
 
@@ -55,14 +79,16 @@
                     BackgroundColor="#C62828"
                     StrokeThickness="0"
                     StrokeShape="RoundRectangle 12"
-                    Padding="15">
+                    Padding="14">
 
                     <Label
                         Text="⚠ Emergencia activa"
-                        FontSize="24"
+                        FontSize="22"
                         FontAttributes="Bold"
                         TextColor="White"
-                        HorizontalOptions="Center" />
+                        HorizontalOptions="Center"
+                        HorizontalTextAlignment="Center"
+                        LineBreakMode="WordWrap" />
 
                 </Border>
 
